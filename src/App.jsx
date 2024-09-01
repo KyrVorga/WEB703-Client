@@ -1,24 +1,32 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
-import Login from './Login';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Signup from './Signup';
+import Login from './Login';
+import Profile from './Profile';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
     return (
-        <Router>
-            <div className="flex justify-center space-x-4 mt-10">
-                <Link to="/login" className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Login
-                </Link>
-                <Link to="/signup" className="bg-green-500 text-white px-4 py-2 rounded">
-                    Sign Up
-                </Link>
+        <div className="App">
+            <div className="top-right-link absolute top-0 right-0">
+                <a href="/profile">Profile</a>
             </div>
-            <Routes>
-                <Route path="/login" component={Login} />
-                <Route path="/signup" component={Signup} />
-            </Routes>
-        </Router>
+            <Router>
+                <Routes>
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </Router>
+        </div>
     );
 }
 

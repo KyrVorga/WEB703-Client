@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { signupUser } from './apiService';
 
 function Signup() {
     const [username, setUsername] = useState('');
@@ -6,58 +8,74 @@ function Signup() {
     const [familyName, setFamilyName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const user = { username, given_name: givenName, family_name: familyName, email, password };
 
         try {
-            const response = await fetch('localhost:443/api/user/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(user),
-            });
-
-            if (response.ok) {
-                // Handle successful signup
-                console.log('User signed up successfully');
-            } else {
-                // Handle errors
-                console.error('Signup failed');
-            }
+            await signupUser(user);
+            navigate('/login', { state: { message: 'Signup successful! Please log in.' } });
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Signup failed', error);
         }
     };
 
     return (
-        <div>
-            <h2>Signup Form</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username:</label>
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Given Name:</label>
-                    <input type="text" value={givenName} onChange={(e) => setGivenName(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Family Name:</label>
-                    <input type="text" value={familyName} onChange={(e) => setFamilyName(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                </div>
-                <button type="submit">Sign Up</button>
+        <div className="flex flex-col items-center mt-10">
+            <h1 className="text-2xl mb-4">Signup Form</h1>
+            <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+                <input
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Given Name"
+                    value={givenName}
+                    onChange={(e) => setGivenName(e.target.value)}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Family Name"
+                    value={familyName}
+                    onChange={(e) => setFamilyName(e.target.value)}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="border border-gray-300 p-2 rounded"
+                    required
+                />
+                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
+                    Sign Up
+                </button>
             </form>
+            <p className="mt-4">
+                Already have an account?{' '}
+                <Link to="/login" className="text-blue-500">
+                    Login
+                </Link>
+            </p>
         </div>
     );
 }
