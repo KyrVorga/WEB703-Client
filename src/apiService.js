@@ -1,6 +1,5 @@
 // src/apiService.js
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-console.log('API_BASE_URL:', API_BASE_URL);
 
 export const signupUser = async (user) => {
     try {
@@ -10,7 +9,7 @@ export const signupUser = async (user) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(user),
-            credentials: 'include', // Include credentials in the request
+            credentials: 'include', 
         });
 
         if (!response.ok) {
@@ -32,7 +31,7 @@ export const loginUser = async (user) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(user),
-            credentials: 'include', // Include credentials in the request
+            credentials: 'include', 
         });
 
         console.log('response:', response);
@@ -48,15 +47,16 @@ export const loginUser = async (user) => {
     }
 };
 
-export const changePassword = async (userId, currentPassword, newPassword) => {
+export const changePassword = async (userId, oldPassword, password) => {
     try {
+        console.log('userId:', userId);
         const response = await fetch(`${API_BASE_URL}/user/update/${userId}`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ currentPassword, newPassword }),
-            credentials: 'include', // Include credentials in the request
+            body: JSON.stringify({ oldPassword, password }),
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -74,7 +74,7 @@ export const checkAuth = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/check`, {
             method: 'GET',
-            credentials: 'include', // Include credentials in the request
+            credentials: 'include', 
         });
 
         if (!response.ok) {
@@ -90,9 +90,10 @@ export const checkAuth = async () => {
 
 export const getUserData = async (userId) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/user/${userId}`, {
+        console.log('userId:', userId);
+        const response = await fetch(`${API_BASE_URL}/user/one/${userId}`, {
             method: 'GET',
-            credentials: 'include', // Include credentials in the request
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -110,7 +111,7 @@ export const getAllUsers = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/user/all`, {
             method: 'GET',
-            credentials: 'include', // Include credentials in the request
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -124,12 +125,11 @@ export const getAllUsers = async () => {
     }
 };
 
-
 export const logoutUser = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/user/logout`, {
             method: 'GET',
-            credentials: 'include', // Include credentials in the request
+            credentials: 'include',
         });
 
         if (!response.ok) {

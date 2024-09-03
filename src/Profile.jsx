@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { changePassword, getAllUsers } from './apiService';
+import { changePassword, getAllUsers, getUserData } from './apiService';
 import { AuthContext } from './AuthContext';
 
 function Profile() {
@@ -10,10 +10,11 @@ function Profile() {
     const [success, setSuccess] = useState('');
     const [allUsers, setAllUsers] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            if (user && user.isAdmin) {
+            if (user && user.role === 'admin') {
                 try {
                     const users = await getAllUsers();
                     setAllUsers(users);
@@ -24,8 +25,26 @@ function Profile() {
             }
         };
 
-        fetchData();
-    }, [user]);
+        const fetchUserData = async () => {
+            if (user) {
+                try {
+                    const data = await getUserData(user._id);
+                    setUserData(data);
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+        };
+
+        console.log('isAuthenticated:', isAuthenticated);
+        console.log('user:', user);
+
+        if (isAuthenticated && user) {
+            fetchUserData();
+            fetchData();
+        }
+        console.log('userData:', userData);
+    }, [user, isAuthenticated]);
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
@@ -40,18 +59,18 @@ function Profile() {
         }
     };
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user || !userData) {
         return <div>Loading...</div>;
     }
 
     return (
         <div className="flex flex-col items-center mt-10 text-white">
             <h2 className="text-2xl mb-4">Profile</h2>
-            <p className="mb-4">Welcome, {user.username}!</p>
+            <p className="mb-4">Welcome, {userData.username}!</p>
             <div className="mb-6">
                 <h3 className="text-xl mb-2">Account Information</h3>
-                <p>Email: {user.email}</p>
-                <p>Username: {user.username}</p>
+                <p>Email: {userData.email}</p>
+                <p>Username: {userData.username}</p>
             </div>
             <div className="mb-6">
                 <h3 className="text-xl mb-2">Change Password</h3>
