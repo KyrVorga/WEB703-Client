@@ -1,21 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-
-const validateToken = (token) => {
-    try {
-        const decoded = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
-        return decoded.exp > currentTime ? decoded : null;
-    } catch (error) {
-        return null;
-    }
-};
+import { AuthContext } from './AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-    const token = localStorage.getItem('token');
-    const decodedToken = token && validateToken(token);
-    return decodedToken ? React.cloneElement(children, { decodedToken }) : <Navigate to="/login" />;
+    const { isAuthenticated } = useContext(AuthContext);
+
+    if (isAuthenticated === null) {
+        return <div>Loading...</div>; // or a loading spinner
+    }
+
+    return isAuthenticated ? children : <Navigate to="/login" state={{ message: 'Unauthorized access. Please log in.' }} />;
 };
 
 export default ProtectedRoute;

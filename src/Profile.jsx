@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
-import { changePassword } from './apiService';
+import React, { useState, useEffect, useContext } from 'react';
+import { changePassword, getAllUsers } from './apiService';
+import { AuthContext } from './AuthContext';
 
-function Profile({ decodedToken }) {
-    const user = decodedToken.user;
-    const isAdmin = decodedToken.role === 'admin';
-
+function Profile() {
+    const { user, isAuthenticated } = useContext(AuthContext);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [allUsers, setAllUsers] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (user && user.isAdmin) {
+                try {
+                    const users = await getAllUsers();
+                    setAllUsers(users);
+                    setIsAdmin(true);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+        };
+
+        fetchData();
+    }, [user]);
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
@@ -16,12 +33,16 @@ function Profile({ decodedToken }) {
         setSuccess('');
 
         try {
-            await changePassword(currentPassword, newPassword);
+            await changePassword(user._id, currentPassword, newPassword);
             setSuccess('Password changed successfully');
         } catch (error) {
             setError('Failed to change password');
         }
     };
+
+    if (!isAuthenticated) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="flex flex-col items-center mt-10 text-white">
@@ -66,9 +87,9 @@ function Profile({ decodedToken }) {
                 <div className="mb-6">
                     <h3 className="text-xl mb-2">Admin: List of All Users</h3>
                     <ul className="list-disc list-inside">
-                        <li>User 1</li>
-                        <li>User 2</li>
-                        <li>User 3</li>
+                        {allUsers.map((user) => (
+                            <li key={user._id}>{user.username}</li>
+                        ))}
                     </ul>
                 </div>
             )}
