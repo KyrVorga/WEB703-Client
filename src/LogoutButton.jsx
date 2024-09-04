@@ -11,7 +11,7 @@ const LogoutButton = () => {
         try {
             await logoutUser();
             logout(); // Update the auth state
-            navigate('/login', { state: { message: 'You have been logged out.' } });
+            navigate('/login', { state: { message: 'You have been logged out.', color: 'green'  } });
         } catch (error) {
             console.error('Logout failed:', error);
         }

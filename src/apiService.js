@@ -34,8 +34,6 @@ export const loginUser = async (user) => {
             credentials: 'include', 
         });
 
-        console.log('response:', response);
-
         if (!response.ok) {
             throw new Error('Login failed');
         }
@@ -90,7 +88,6 @@ export const checkAuth = async () => {
 
 export const getUserData = async (userId) => {
     try {
-        console.log('userId:', userId);
         const response = await fetch(`${API_BASE_URL}/user/one/${userId}`, {
             method: 'GET',
             credentials: 'include',

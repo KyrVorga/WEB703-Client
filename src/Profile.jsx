@@ -36,14 +36,10 @@ function Profile() {
             }
         };
 
-        console.log('isAuthenticated:', isAuthenticated);
-        console.log('user:', user);
-
         if (isAuthenticated && user) {
             fetchUserData();
             fetchData();
         }
-        console.log('userData:', userData);
     }, [user, isAuthenticated]);
 
     const handlePasswordChange = async (e) => {

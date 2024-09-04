@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { loginUser } from './apiService';
 import { AuthContext } from './AuthContext';
+import { checkAuth } from './apiService';
 
 function Login() {
     const location = useLocation();
@@ -10,16 +11,18 @@ function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [showMessage, setShowMessage] = useState(true);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         
         try {
             const user = { username, password };
-            const response = await loginUser(user);
-            console.log('Login successful:', response);
+            await loginUser(user);
 
-            login(response.user); // Pass the user data to the login function
+            const authData = await checkAuth();
+
+            login(authData.user); // Pass the user data to the login function
             
             navigate('/profile');
         } catch (error) {
@@ -31,9 +34,21 @@ function Login() {
     return (
         <div className="flex flex-col items-center mt-10">
             <h1 className="text-2xl mb-4">Login Form</h1>
-            {location.state?.message && (
-                <div className="border border-red-400 text-red-400 px-4 py-3 rounded relative mb-4">
+            {showMessage && location.state?.message && (
+                <div
+                    className={`border px-4 py-3 rounded relative mb-4 ${
+                        location.state.color === 'red'
+                            ? 'border-red-400 text-red-400'
+                            : 'border-green-400 text-green-400'
+                    }`}
+                >
                     {location.state.message}
+                    <p
+                        onClick={() => setShowMessage(false)}
+                        className="absolute top-0 right-0 text-xl font-bold cursor-pointer"
+                    >
+                        &times;
+                    </p>
                 </div>
             )}
             {errorMessage && (

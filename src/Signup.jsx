@@ -16,7 +16,7 @@ function Signup() {
 
         try {
             await signupUser(user);
-            navigate('/login', { state: { message: 'Signup successful! Please log in.' } });
+            navigate('/login', { state: { message: 'Signup successful! Please log in.', color: 'green'  } });
         } catch (error) {
             console.error('Signup failed', error);
         }
