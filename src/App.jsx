@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Signup from './Signup';
 import Login from './Login';
 import Profile from './Profile';
+import Group from './Group';
 import ProtectedRoute from './ProtectedRoute';
 import LogoutButton from './LogoutButton';
 import { AuthContext, AuthProvider } from './AuthContext';
@@ -20,6 +21,7 @@ function AppContent() {
                     </>
                 )}
                 <a href="/profile" className='ml-4'>Profile</a>
+                <a href="/groups" className='ml-4'>Groups</a>
             </div>
             <Routes>
                 <Route path="/signup" element={<Signup />} />
@@ -29,6 +31,14 @@ function AppContent() {
                     element={
                         <ProtectedRoute>
                             <Profile />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/groups"
+                    element={
+                        <ProtectedRoute>
+                            <Group />
                         </ProtectedRoute>
                     }
                 />

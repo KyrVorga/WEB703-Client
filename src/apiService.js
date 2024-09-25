@@ -139,3 +139,101 @@ export const logoutUser = async () => {
         throw error;
     }
 }
+
+export const fetchGroups = async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/group/all`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch groups');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching groups:', error);
+        throw error;
+    }
+};
+
+export const createGroup = async (name) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/groups/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name }),
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create group');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error creating group:', error);
+        throw error;
+    }
+};
+
+export const joinGroup = async (invitationCode) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/invite/redeem/${invitationCode}`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to join group');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error joining group:', error);
+        throw error;
+    }
+};
+
+export const fetchInvitations = async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/invite/all`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch invites');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching invites:', error);
+        throw error;
+    }
+};
+
+export const createInviteLink = async (groupId, maxUses, expiryDate) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/invite/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ group: groupId, maxUses, expiryDate }),
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create invite link');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error creating invite link:', error);
+        throw error;
+    }
+};
